@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Snapchat">
-        <activity android:name=".ChooseUserActivity"></activity>
+        <activity android:name=".SnapsActivity"></activity>
+        <activity android:name=".ChooseUserActivity" />
         <activity android:name=".CreateSnapActivity" />
         <activity android:name=".SecondActivity" />
         <activity android:name=".MainActivity">

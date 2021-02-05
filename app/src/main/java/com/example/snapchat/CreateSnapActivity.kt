@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -81,35 +82,40 @@ class CreateSnapActivity : AppCompatActivity() {
         createSnapImageView?.buildDrawingCache()
         val bitmap = (createSnapImageView?.drawable as BitmapDrawable).bitmap
         val baos = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         val data = baos.toByteArray()
 
 
         val uploadTask =
             FirebaseStorage.getInstance().reference.child("images").child(imageName).putBytes(data)
+
         uploadTask.addOnFailureListener {
             // Handle unsuccessful uploads
-            Toast.makeText(
-                baseContext, "Failed to upload",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(baseContext, "Failed to upload", Toast.LENGTH_LONG).show()
         }.addOnSuccessListener {
-
             Toast.makeText(
                 baseContext, "Image uploaded",
                 Toast.LENGTH_LONG
             ).show()
+            var downloadUrl: Uri? = null
+            FirebaseStorage.getInstance().reference.child("images")
+                .child(imageName).downloadUrl.addOnSuccessListener { it1 ->
+                downloadUrl = it1
+                Log.i(
+                    "url",
+                    downloadUrl.toString()
+                )
+                val intent = Intent(this, ChooseUserActivity::class.java)
+                intent.putExtra("imageUrl", downloadUrl.toString())
+                intent.putExtra("imageName", imageName)
+                intent.putExtra("message", messageEditText?.text.toString())
+                startActivity(intent)
+            }
 
-            Log.i(
-                "url",
-                FirebaseStorage.getInstance().reference.child("images")
-                    .child(imageName).downloadUrl.toString()
-            )
 
-
-            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-            // ...
         }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
