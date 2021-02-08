@@ -18,6 +18,7 @@ class ChooseUserActivity : AppCompatActivity() {
     var emails: ArrayList<String> = ArrayList()
     var keys: ArrayList<String> = ArrayList()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_user)
@@ -36,6 +37,7 @@ class ChooseUserActivity : AppCompatActivity() {
                     val email = snapshot.child("email").value as String
                     emails.add(email)
                     keys.add(snapshot.key.toString())
+
                     adapter.notifyDataSetChanged()
                 }
 
@@ -55,6 +57,8 @@ class ChooseUserActivity : AppCompatActivity() {
 
 
 
+
+
         chooseUserListView?.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, view, i, l ->
                 val snapMap: Map<String, String> = mapOf(
@@ -66,7 +70,7 @@ class ChooseUserActivity : AppCompatActivity() {
                 FirebaseDatabase.getInstance().reference.child("users").child(keys[i])
                     .child("snaps").push().setValue(snapMap)
                 println("IMAGEURL${intent.getStringExtra("imageUrl")}")
-                val intent = Intent(this, SnapsActivity::class.java)
+                val intent = Intent(this, SecondActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
 
